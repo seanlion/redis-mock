@@ -201,6 +201,23 @@ jest.mock('redis', () => jest.requireActual('redis-mock'));
 This will make sure that the actual `redis` is never loaded and whenever any file tries to import/require `redis`,
 `redis-mock` will be returned instead.
 
+### Using Jest mock function
+
+If you need to return value from the commands, you can pass a callback-function to the commands and wrap it in a promise, which you then can await, e.g.:
+
+```javascript
+jest.fn().mockImplementation(async (args) => {
+    const result = await new Promise((resolve, reject) => {
+        redis_client.command(args, function(err,result)
+         {
+            resolve(result);
+         });
+    });
+    return result;
+});
+
+```
+
 ## LICENSE - "MIT License"
 
 Copyright (c) 2012 Kristian Faeldt <kristian.faeldt@gmail.com>
